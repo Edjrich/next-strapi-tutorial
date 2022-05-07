@@ -1,6 +1,7 @@
 import ReactMarkdown from 'react-markdown'
 
-const URL = process.env.STRAPIBASEURL
+// const URL = process.env.STRAPIBASEURL
+const URL = `https://murmuring-bayou-82351.herokuapp.com`
 // const URL = 'http://localhost:1337'
 
 export async function getStaticPaths() {
@@ -61,7 +62,7 @@ export async function getStaticProps({ params }) {
   const res = await fetch(`${URL}/graphql`, fetchParams)
   const { data } = await res.json()
 
-  console.log(data)
+  // console.log(data)
 
   return {
     props: data.blogposts[0],

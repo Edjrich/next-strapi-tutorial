@@ -4,8 +4,9 @@ import styles from '../styles/Home.module.css'
 // import Link from 'next/link'
 import Blog from '../components/Blog'
 
-const URL = process.env.STRAPIBASEURL
+// const URL = process.env.STRAPIBASEURL
 // const URL = 'http://localhost:1337'
+const URL = `https://murmuring-bayou-82351.herokuapp.com`
 
 export async function getStaticProps(context) {
   const fetchParams = {
@@ -30,7 +31,9 @@ export async function getStaticProps(context) {
   }
 
   const res = await fetch(`${URL}/graphql`, fetchParams)
+  console.log('res', res)
   const { data } = await res.json()
+  console.log('data', data)
 
   return {
     props: data,
@@ -40,7 +43,7 @@ export async function getStaticProps(context) {
 
 export default function Home(data) {
   console.log(data)
-  console.log(data.blogposts)
+  // console.log(data.blogposts)
   return (
     <div className={styles.container}>
       <Head>
@@ -55,14 +58,14 @@ export default function Home(data) {
         <h1 className={styles.title}>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
-        <div>
+        {/* <div>
           {data.blogposts.map((blogpost, i) => {
             const { title, description, slug } = blogpost
             return <Blog title={title} description={description} slug={slug} key={i} />
           })}
-        </div>
+        </div> */}
 
-        {/* <p className={styles.description}>
+        <p className={styles.description}>
           Get started by editing <code className={styles.code}>pages/index.js</code>
         </p>
 
@@ -89,7 +92,7 @@ export default function Home(data) {
             <h2>Deploy &rarr;</h2>
             <p>Instantly deploy your Next.js site to a public URL with Vercel.</p>
           </a>
-        </div> */}
+        </div>
       </main>
 
       <footer className={styles.footer}>
