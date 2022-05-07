@@ -1,8 +1,46 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
+// import Link from 'next/link'
+import Blog from '../components/Blog'
 
-export default function Home() {
+const URL = process.env.STRAPIBASEURL
+// const URL = 'http://localhost:1337'
+
+export async function getStaticProps(context) {
+  const fetchParams = {
+    method: 'post',
+    headers: {
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      query: `{
+      blogposts{
+        title
+        blogbody
+        description
+        slug
+        splash{
+          url
+        }
+      }
+    }
+      `,
+    }),
+  }
+
+  const res = await fetch(`${URL}/graphql`, fetchParams)
+  const { data } = await res.json()
+
+  return {
+    props: data,
+    revalidate: 10,
+  }
+}
+
+export default function Home(data) {
+  console.log(data)
+  console.log(data.blogposts)
   return (
     <div className={styles.container}>
       <Head>
@@ -11,14 +49,21 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      <h1>{data.blogposts[0].title}</h1>
+
       <main className={styles.main}>
         <h1 className={styles.title}>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
+        <div>
+          {data.blogposts.map((blogpost, i) => {
+            const { title, description, slug } = blogpost
+            return <Blog title={title} description={description} slug={slug} key={i} />
+          })}
+        </div>
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
+        {/* <p className={styles.description}>
+          Get started by editing <code className={styles.code}>pages/index.js</code>
         </p>
 
         <div className={styles.grid}>
@@ -32,10 +77,7 @@ export default function Home() {
             <p>Learn about Next.js in an interactive course with quizzes!</p>
           </a>
 
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
+          <a href="https://github.com/vercel/next.js/tree/canary/examples" className={styles.card}>
             <h2>Examples &rarr;</h2>
             <p>Discover and deploy boilerplate example Next.js projects.</p>
           </a>
@@ -45,11 +87,9 @@ export default function Home() {
             className={styles.card}
           >
             <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
+            <p>Instantly deploy your Next.js site to a public URL with Vercel.</p>
           </a>
-        </div>
+        </div> */}
       </main>
 
       <footer className={styles.footer}>
